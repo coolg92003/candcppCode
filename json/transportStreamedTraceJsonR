@@ -1,0 +1,29 @@
+{
+"socket_streamed_trace_segment": {
+  "event": {
+    "timestamp": {
+      "seconds": 1741756766,
+      "nanos": 231973000
+    },
+    "read": {
+      "data": {
+        "as_bytes": "CFX_read"
+      }
+    },
+    "connection": {
+      "local_address": {
+        "socket_address": {
+          "address": "127.0.0.1",
+          "port_value": 8022
+        }
+      },
+      "remote_address": {
+        "socket_address": {
+          "address": "127.0.0.1",
+          "port_value": 43624
+        }
+      }
+    }
+  }
+}
+}

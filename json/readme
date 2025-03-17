@@ -1,0 +1,20 @@
+安装 RapidJSON
+
+    使用 Git 克隆：git clone https://github.com/Tencent/rapidjson.git
+    或使用包管理器（apt, brew, vcpkg 等）
+
+配置
+
+    直接包含 #include "rapidjson/document.h"
+    编译时加 -I 选项指向 rapidjson/include
+    或使用 CMake find_package(RapidJSON REQUIRED)
+
+编写代码
+
+    使用 rapidjson::Document 解析 JSON
+    通过 doc["key"].Get<Type>() 访问数据
+
+编译
+
+    g++ -I /path/to/rapidjson/include my_program.cpp -o my_program
+    g++ -std=c++20  -O2  -Werror -Wall -Wextra -Wpedantic -o a cppTestJson.cpp -I /root/others/rapidjson/include

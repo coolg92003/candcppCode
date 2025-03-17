@@ -119,6 +119,20 @@ void cfx_unique_pointer2(void)
 		std::cout << "\tcfx_unique_pointer2 P5 is null "  << std::endl;
 	}
 	p6->displayApple();
+	std::cout << "\tcfx_unique_pointer2 start Test reset "  << std::endl;
+	auto pReset =  std::make_unique<CFXApple>("Fu_shi_reset");
+	pReset.reset();
+	if (pReset == nullptr)
+		std::cout << "\tcfx_unique_pointer2 pReset is nullptr after reset"  << std::endl;
+	std::cout << "\tcfx_unique_pointer2 end Test reset "  << std::endl;
+	std::cout << "\n\tcfx_unique_pointer2 start Test move "  << std::endl;
+	auto u_ptr1 =  std::make_unique<CFXApple>("Fu_shi_move");
+	std::unique_ptr<CFXApple> u_ptr2 = nullptr; 
+	u_ptr2 = std::move(u_ptr1);
+	if (u_ptr1 == nullptr)
+		std::cout << "\tcfx_unique_pointer2 u_ptr1 is nullptr after move"  << std::endl;
+	u_ptr2->display();
+	std::cout << "\tcfx_unique_pointer2 end Test move "  << std::endl;
 	return;
 }
 

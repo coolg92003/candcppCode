@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package trace;
+
+message Timestamp {
+  int64 seconds = 1;
+  int32 nanos = 2;
+}
+
+message Data {
+  bytes as_bytes = 1;
+}
+
+message Read {
+  Data data = 1;
+}
+
+message SocketAddress {
+  string address = 1;
+  int32 port_value = 2;
+}
+
+message Connection {
+  SocketAddress local_address = 1;
+  SocketAddress remote_address = 2;
+}
+
+message Event {
+  Timestamp timestamp = 1;
+  Read read = 2;
+  Connection connection = 3;
+}
+
+message SocketStreamedTraceSegment {
+  Event event = 1;
+}

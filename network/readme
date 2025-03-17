@@ -1,0 +1,28 @@
+export LD_LIBRARY_PATH=/root/others/gcc++/objdir/x86_64-pc-linux-gnu/libstdc++-v3/src/.libs/
+
+udpServer3.cpp
+  freequeue
+	git clone https://github.com/cameron314/concurrentqueue.git
+	g++ -o udp_server udp_server.cpp -pthread -I /root/others/rapidjson/include
+
+	for i in {1..10}; do echo "Message $i" | nc -w 1 -u 127.0.0.1 5060; done
+        single test
+	cat /root/others/candcppCode/json/transportStreamedTraceJsonR | nc -w 1 -u 127.0.0.1 5060
+
+   json
+	使用 Git 克隆：git clone https://github.com/Tencent/rapidjson.git
+g++ -std=c++20 -Werror -Wall -Wextra -Wpedantic -o a cppType.cpp --verbose
+
+Assemble
+g++ -std=c++20 -S -O0 -Werror -Wall -Wextra -Wpedantic -o a.s cppTestAssem.cpp
+
+	proto
+		export PKG_CONFIG_PATH=/root/others/protobuf:/root/others/protobuf/lib/pkgconfig:/root/others/protobuf/third_party/utf8_range
+		latest:
+			export PKG_CONFIG_PATH=/root/others/grpc/grpc/cmake/build/third_party/protobuf:/root/others/grpc/grpc/cmake/build/lib/pkgconfig:/root/others/grpc/grpc/cmake/build/third_party/protobuf/third_party/utf8_range
+			pkg-config --cflags --libs protobuf
+			protoc --cpp_out=. trace.proto
+			protoc --version
+				libprotoc 24.3
+	g++ -std=c++17 -o protobuf_gen protoBuffGenBinFile.cpp trace.pb.cc -I/usr/local/include -lprotobuf `pkg-config --cflags --libs protobuf`
+

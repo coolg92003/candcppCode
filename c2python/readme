@@ -1,0 +1,1 @@
+g++ -shared -o libc2python.so -fPIC c_cfx_lib.c
