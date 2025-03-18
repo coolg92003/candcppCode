@@ -1,0 +1,177 @@
+syntax = "proto3";
+
+package trace2;
+
+
+message Body {
+  //option (udpa.annotations.versioning).previous_message_type = "envoy.data.tap.v2alpha.Body";
+
+  oneof body_type {
+    bytes as_bytes = 1;
+    string as_string = 2;
+  }
+
+  bool truncated = 3;
+}
+
+message SocketAddress {
+ //option (udpa.annotations.versioning).previous_message_type = "envoy.api.v2.core.SocketAddress";
+
+  enum Protocol {
+    TCP = 0;
+    UDP = 1;
+  }
+
+  Protocol protocol = 1;
+  string address = 2;
+  oneof port_specifier {
+    //option (validate.required) = true;
+    uint32 port_value = 3;
+
+    // This is only valid if :ref:`resolver_name
+    // <envoy_v3_api_field_config.core.v3.SocketAddress.resolver_name>` is specified below and the
+    // named resolver is capable of named port resolution.
+    string named_port = 4;
+  }
+  string resolver_name = 5;
+  bool ipv4_compat = 6;
+}
+message Pipe {
+  //option (udpa.annotations.versioning).previous_message_type = "envoy.api.v2.core.Pipe";
+  // Linux.
+  string path = 1;
+
+  // The mode for the Pipe. Not applicable for abstract sockets.
+  uint32 mode = 2;
+}
+message EnvoyInternalAddress {
+  oneof address_name_specifier {
+    string server_listener_name = 1;
+  }
+
+  string endpoint_id = 2;
+}
+
+message Address {
+  //option (udpa.annotations.versioning).previous_message_type = "envoy.api.v2.core.Address";
+  oneof address {
+   // option (validate.required) = true;
+
+    SocketAddress socket_address = 1;
+    Pipe pipe = 2;
+    // Specifies a user-space address handled by :ref:`internal listeners
+    // <envoy_v3_api_field_config.listener.v3.Listener.internal_listener>`.
+    EnvoyInternalAddress envoy_internal_address = 3;
+  }
+}
+
+
+message Connection {
+  //option (udpa.annotations.versioning).previous_message_type = "envoy.data.tap.v2alpha.Connection";
+
+  // Local address.
+  Address local_address = 1;
+
+  // Remote address.
+  Address remote_address = 2;
+}
+
+message Timestamp {
+  int64 seconds = 1;
+  int32 nanos = 2;
+}
+
+// Event in a socket trace.
+message SocketEvent {
+ // Data read by Envoy from the transport socket.
+  message Read {
+    //option (udpa.annotations.versioning).previous_message_type =
+     //   "envoy.data.tap.v2alpha.SocketEvent.Read";
+    // Binary data read.
+    Body data = 1;
+  }
+  message Write {
+    //option (udpa.annotations.versioning).previous_message_type =
+     //   "envoy.data.tap.v2alpha.SocketEvent.Write";
+
+    // Binary data written.
+    Body data = 1;
+    // Stream was half closed after this write.
+    bool end_stream = 2;
+  }
+  message Closed {
+    // TODO(mattklein123): Close event type.
+
+    //option (udpa.annotations.versioning).previous_message_type =
+     //   "envoy.data.tap.v2alpha.SocketEvent.Closed";
+  }
+  // Timestamp for event.
+  Timestamp timestamp = 1;
+
+  // Read or write with content as bytes string.
+  oneof event_selector {
+    Read read = 2;
+
+    Write write = 3;
+
+    Closed closed = 4;
+  }
+  Connection connection_per_event = 5;
+}
+
+message SocketBufferedTrace {
+  //option (udpa.annotations.versioning).previous_message_type =
+   //   "envoy.data.tap.v2alpha.SocketBufferedTrace";
+
+  // Trace ID unique to the originating Envoy only. Trace IDs can repeat and should not be used
+  // for long term stable uniqueness. Matches connection IDs used in Envoy logs.
+  uint64 trace_id = 1;
+
+  // Connection properties.
+  Connection connection = 2;
+
+  // Sequence of observed events.
+  repeated SocketEvent events = 3;
+
+  // Set to true if read events were truncated due to the :ref:`max_buffered_rx_bytes
+  // <envoy_v3_api_field_config.tap.v3.OutputConfig.max_buffered_rx_bytes>` setting.
+  bool read_truncated = 4;
+
+  // Set to true if write events were truncated due to the :ref:`max_buffered_tx_bytes
+  // <envoy_v3_api_field_config.tap.v3.OutputConfig.max_buffered_tx_bytes>` setting.
+  bool write_truncated = 5;
+}
+
+message SocketStreamedTraceSegment {
+  //option (udpa.annotations.versioning).previous_message_type =
+   //   "envoy.data.tap.v2alpha.SocketStreamedTraceSegment";
+  // Trace ID unique to the originating Envoy only. Trace IDs can repeat and should not be used
+  // for long term stable uniqueness. Matches connection IDs used in Envoy logs.
+  uint64 trace_id = 1;
+
+  oneof message_piece {
+    // Connection properties.
+    Connection connection = 2;
+
+    // Socket event.
+    SocketEvent event = 3;
+  }
+}
+message TraceWrapper {
+  oneof trace {
+    //option (validate.required) = true;
+
+    // An HTTP buffered tap trace.
+    //HttpBufferedTrace http_buffered_trace = 1;
+
+    // An HTTP streamed tap trace segment.
+    //HttpStreamedTraceSegment http_streamed_trace_segment = 2;
+
+    // A socket buffered tap trace.
+    SocketBufferedTrace socket_buffered_trace = 3;
+
+    // A socket streamed tap trace segment.
+    SocketStreamedTraceSegment socket_streamed_trace_segment = 4;
+  }
+}
+
